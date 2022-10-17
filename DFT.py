@@ -30,7 +30,6 @@ def a_0 (x, T):
 def reconstruct(x, T, n):
 	return sum(a_n(x, n, T) * math.cos(2*math.pi*n*t/T) + b_n(x, n, T) * math.sin(2*math.pi*n*t/T) for t in range(T))
 
-
 if __name__ == '__main__':
 	# set path of filedialog to current directory
 	file_path = filedialog.askopenfilename(initialdir = "./samples/", title = "Select a text file.", filetypes = (("Text files", "*.txt"), ("All files", "*.*")))
@@ -50,16 +49,18 @@ if __name__ == '__main__':
 	T = len(samples)
 
 	# get array of time values
-	t = np.array([i for i in range(int(T/2))])
+	# t = np.array([i for i in range(int(T/2))])
+	t = 5
 	
 	# harmonics 
-	harmonics = []
-	for t in range(T):
-		harmonics += [f_t(t, samples, T, n) for n in range(harm_count)]
+	# harmonics = []
+	# for t in range(T):
+	# 	harmonics += [f_t(t, samples, T, n) for n in range(harm_count)]
 
-	# Plot the first 1024 samples
-	plt.plot(samples[:1024])
-	plt.show()
+	harmonics = [f_t(t, samples, T, n) for n in range(harm_count)]
 
-	plt.plot(harmonics)
+	# plot bar graph of harmonics
+	plt.xlabel("Harmonic")
+	plt.ylabel("Amplitude")
+	plt.bar(range(harm_count), harmonics)
 	plt.show()
