@@ -30,7 +30,7 @@ def a_0 (x, T):
 def reconstruct(x, T, n):
 	return sum(a_n(x, n, T) * math.cos(2*math.pi*n*t/T) + b_n(x, n, T) * math.sin(2*math.pi*n*t/T) for t in range(T))
 
-if __name__ == '__main__':
+def main ():
 	# set path of filedialog to current directory
 	file_path = filedialog.askopenfilename(initialdir = "./samples/", title = "Select a text file.", filetypes = (("Text files", "*.txt"), ("All files", "*.*")))
 	# read in file
@@ -64,3 +64,7 @@ if __name__ == '__main__':
 	plt.ylabel("Amplitude")
 	plt.bar(range(harm_count), harmonics)
 	plt.show()
+
+if __name__ == '__main__':
+	main()
+	
