@@ -36,7 +36,7 @@ def main ():
 	# read in file
 	with open(file_path, 'r') as f:
 		samples = [float(line) for line in f]
- 
+
 	# valid input for harmonic count
 	while True:
 		try:
