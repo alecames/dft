@@ -147,11 +147,11 @@ def main():
 
 	# saves harmonics to file
 	while True:
-		save = input("Save harmonics to file? (y/n): ")
+		save = input("\nSave harmonics to file? (y/n): ")
 		if save == "y":
 			save_harmonics(harmonic_count, harmonics, phases, file_path)
 			print(
-				f"\nSaved harmonics to '/harmonics_out/{getname(file_path)}_{harmonic_count}_harmonics.txt'.")
+				f"Saved harmonics to '/harmonics_out/{getname(file_path)}_{harmonic_count}_harmonics.txt'.")
 			break
 		elif save == "n":
 			break
