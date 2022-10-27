@@ -60,8 +60,8 @@ def calculate_phases(input, h_count):
 	return [phase_n(input, n, len(input)) for n in range(1, h_count+1)]
 
 # plots original wave
-def plot_wave(wave):
-	plt.title("Input Waveform")
+def plot_wave(wave, title):
+	plt.title(title)
 	plt.xlabel("Time (samples)")
 	plt.ylabel("Amplitude")
 	plt.plot(wave)
@@ -73,11 +73,11 @@ def plot_harmonics(h_count, harmonics, phases):
 	fig.suptitle(f"Harmonics of Input Waveform (n = {h_count})")
 	ax1.set_xlabel("Harmonic #")
 	ax1.set_ylabel("Amplitude")
-	ax1.plot(range(1, h_count+1), harmonics, label="Amplitude")
-	ax1.bar(range(h_count), harmonics, 0.9, color="royalblue")
+	ax1.bar(range(h_count), harmonics, 0.9, color="royalblue", label="Amplitude")
 	ax2 = ax1.twinx()
 	ax2.set_ylabel("Phase (radians)")
-	ax2.bar(range(h_count), phases, 0.125, color=(0.5, 0.5, 0.5, 0.5))
+	ax2.bar(range(h_count), phases, 0.125, color=(0.5, 0.5, 0.5, 0.5), label="Phase")
+	fig.legend()
 	plt.show()
 
 # saves the harmonics and phases to a file titled {filename}_{harmonic count}_harmonics.txt into 'out' folder
@@ -135,7 +135,7 @@ def main():
 	harmonics = calculate_harmonics(samples, harmonic_count)
 	phases = calculate_phases(samples, harmonic_count)
 	print("1. Plotting time-amplitude graph of original wave...\n   Close graph to continue to harmonics...")
-	plot_wave(samples)
+	plot_wave(samples, "Original Wave")
 	print("2. Performing Discrete Fourier Transform...")
 	print(
 		f"3. Plotting graph of {harmonic_count} harmonics...\n   Close graph to continue to reconstruction...")
@@ -143,7 +143,7 @@ def main():
 	reconstructed_wave = reconstruct_wave(
 		harmonic_count, harmonics, phases, len(samples))
 	print("4. Plotting graph of reconstructed wave...\n   Close graph to save harmonics data to file...")
-	plot_wave(reconstructed_wave)
+	plot_wave(reconstructed_wave, "Reconstructed Wave")
 
 	# saves harmonics to file
 	while True:
