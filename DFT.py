@@ -57,24 +57,46 @@ def plot_wave (wave):
 	plt.plot(wave)
 	plt.show()
 
-# plots the amplitude of the harmonics and phase in a graph below
-def plot_graph (h_count, harmonics, phases):
+# function to plot original wave, amplitude of harmonics, and phase of harmonics in one figure
+def plot_graph (h_count, harmonics, phases, wave, file_path):
+	# plot original wave
+	plt.subplot()
+	plt.title("Input Waveform")
+	plt.xlabel("Time (samples)")
+	plt.ylabel("Amplitude")
+	plt.plot(wave)
+	plt.show()
 	fig, ax1 = plt.subplots()
 	fig.suptitle(f"Harmonics of Input Waveform (n = {h_count})")
-	ax1.set_title("Ampltiude and Phase of Harmonics")
 	ax1.set_xlabel("Harmonic #")
 	ax1.set_ylabel("Amplitude")
 	ax1.bar(range(h_count), harmonics, 0.9, color = "royalblue")
 	ax2 = ax1.twinx()
 	ax2.set_ylabel("Phase (radians)")
-	ax2.bar(range(h_count), phases, 0.125, color = "limegreen")
+	ax2.bar(range(h_count), phases, 0.125, color = (0.5, 0.5, 0.5, 0.5))
 	plt.show()
 
-def save_to_file (h_count, harmonics, phases, file_name):
-	with open(file_name, 'w') as f:
+# saves the harmonics and phases to a file titled {filename}_{harmonic count}_harmonics.txt into 'out' folder
+def save_to_file (h_count, harmonics, phases, file_path):
+	with open(f"out/{getname(file_path)}_{h_count}_harmonics.txt", 'w') as f:
 		for n in range(h_count):
-			f.write(f"{n} {harmonics[n]}\t{phases[n]}\n")
+			f.write(f"{harmonics[n]}\t{phases[n]}\n")
 
+# get the name of the file for saving
+def getname (file_path):
+	return file_path.split("/")[-1].split(".")[0]
+
+# reconstruct the wave by creating sine waves with the harmonics and phases and adding them together
+def reconstruct_wave (h_count, harmonics, phases, T):
+	wave = [0 for i in range(T)]
+	for n in range(h_count):
+		for t in range(T):
+			wave[t] += harmonics[n] * np.sin(2*math.pi*n*t/T + phases[n])
+	return wave
+
+
+# ================================ = ================================ = ================================
+# main function
 def main ():
 	print("\nDiscrete Fourier Transform Tool\n--------------------------------\nThis program will take an input wave plot it's harmonics and reconstruct the wave from the harmonics.")
 	print(f"Sample rate: {SAMPLE_RATE}Hz")
@@ -86,6 +108,7 @@ def main ():
 
 	print(f"File selected: {file_path}\nNumber of samples: {len(samples)}\nLength in milliseconds: {(len(samples)/SAMPLE_RATE * 1000):.3f}ms")
 
+	# input check loop
 	while True:
 		try:
 			harmonic_count = int(input(f"Enter the number of harmonics ({int(len(samples)/2)} max): "))
@@ -99,8 +122,21 @@ def main ():
 
 	harmonics = calculate_harmonics(samples, harmonic_count)
 	phases = calculate_phases(samples, harmonic_count)
-	plot_wave(samples)
-	plot_graph(harmonic_count, harmonics, phases)
+	plot_graph(harmonic_count, harmonics, phases, samples, file_path)
+
+	reconstructed_wave = reconstruct_wave(harmonic_count, harmonics, phases, len(samples))
+	plot_wave(reconstructed_wave)
+
+	# save harmonics to file
+	while True:
+		save = input("Save to file? (y/n): ")
+		if save == "y":
+			save_to_file(harmonic_count, harmonics, phases, file_path)
+			break
+		elif save == "n": break
+		else:
+			print("Error: Invalid input.")
+			continue
 
 if __name__ == '__main__':
 	main()
