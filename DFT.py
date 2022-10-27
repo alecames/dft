@@ -10,7 +10,7 @@ root.withdraw()
 SAMPLE_RATE = 44100
 
 # variables:
-# ----------------------------
+# ----------------------------------------
 # t = time in samples (from 0 to T-1)
 # T = total number of samples
 # f(t) = amplitude of wave at time t
@@ -39,7 +39,7 @@ def amplitude_n (x, n, T):
 
 # this will calculate the phase of the nth harmonic
 def phase_n (x, n, T):
-	return np.arctan(b_n(x, n, T)/a_n(x, n, T))
+	return np.arctan(a_n(x, n, T)/b_n(x, n, T))
 
 # calculates the amplitude of the harmonics for all harmonics
 def calculate_harmonics (input, h_count):
@@ -47,7 +47,7 @@ def calculate_harmonics (input, h_count):
 
 # calculates the phase of the harmonics for all harmonics
 def calculate_phases (input, h_count):
-	return [phase_n(input, n, len(input)) for n in range(h_count)]
+	return [phase_n(input, n, len(input)) for n in range(1, h_count+1)]
 
 # plots original wave
 def plot_wave (wave):
@@ -77,16 +77,22 @@ def plot_graph (h_count, harmonics, phases, wave, file_path):
 	plt.show()
 
 # saves the harmonics and phases to a file titled {filename}_{harmonic count}_harmonics.txt into 'out' folder
-def save_to_file (h_count, harmonics, phases, file_path):
-	with open(f"out/{getname(file_path)}_{h_count}_harmonics.txt", 'w') as f:
+def save_harmonics (h_count, harmonics, phases, file_path):
+	with open(f"harmonics_out/{getname(file_path)}_{h_count}_harmonics.txt", 'w') as f:
 		for n in range(h_count):
 			f.write(f"{harmonics[n]}\t{phases[n]}\n")
+
+# saves the reconstructed wave to a file titled {filename}_{harmonic count}_reconstructed.txt into 'out' folder
+def save_wave (h_count, wave, file_path):
+	with open(f"reconstruct_out/{getname(file_path)}_{h_count}_reconstructed.txt", 'w') as f:
+		for t in range(len(wave)):
+			f.write(f"{wave[t]}\n")
 
 # get the name of the file for saving
 def getname (file_path):
 	return file_path.split("/")[-1].split(".")[0]
 
-# reconstruct the wave by creating sine waves with the harmonics and phases and adding them together
+# reconstruct the wave by inverse DFT
 def reconstruct_wave (h_count, harmonics, phases, T):
 	wave = [0 for i in range(T)]
 	for n in range(h_count):
@@ -94,9 +100,7 @@ def reconstruct_wave (h_count, harmonics, phases, T):
 			wave[t] += harmonics[n] * np.sin(2*math.pi*n*t/T + phases[n])
 	return wave
 
-
 # ================================ = ================================ = ================================
-# main function
 def main ():
 	print("\nDiscrete Fourier Transform Tool\n--------------------------------\nThis program will take an input wave plot it's harmonics and reconstruct the wave from the harmonics.")
 	print(f"Sample rate: {SAMPLE_RATE}Hz")
@@ -122,21 +126,38 @@ def main ():
 
 	harmonics = calculate_harmonics(samples, harmonic_count)
 	phases = calculate_phases(samples, harmonic_count)
+	print("1. Plotting time-amplitude graph of original wave...\nClose graph to continue to harmonics.")
 	plot_graph(harmonic_count, harmonics, phases, samples, file_path)
-
+	print("2. Performing Discrete Fourier Transform...")
+	print(f"3. Plotting graph of {harmonic_count} harmonics...\nClose graph to continue to reconstruction.")
 	reconstructed_wave = reconstruct_wave(harmonic_count, harmonics, phases, len(samples))
+	print("4. Plotting graph of reconstructed wave...\nClose graph to save harmonics data to file.")
 	plot_wave(reconstructed_wave)
 
-	# save harmonics to file
+	# saves harmonics to file
 	while True:
-		save = input("Save to file? (y/n): ")
+		save = input("Save harmonics to file? (y/n): ")
 		if save == "y":
-			save_to_file(harmonic_count, harmonics, phases, file_path)
+			save_harmonics(harmonic_count, harmonics, phases, file_path)
 			break
 		elif save == "n": break
 		else:
 			print("Error: Invalid input.")
 			continue
+	print(f"Saved harmonics to '/harmonics_out/{getname(file_path)}_{harmonic_count}_harmonics.txt'.")
+
+	# saves reconstructed wave to file
+	while True:
+		save = input("Save reconstructed wave to file? (y/n): ")
+		if save == "y":
+			save_wave(harmonic_count, reconstructed_wave, file_path)
+			break
+		elif save == "n": break
+		else:
+			print("Error: Invalid input.")
+			continue
+	print(f"Saved reconstructed wave to '/reconstruct_out/{getname(file_path)}_{harmonic_count}_reconstructed.txt'.")
+	print("Done.")
 
 if __name__ == '__main__':
 	main()
