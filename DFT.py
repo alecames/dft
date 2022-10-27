@@ -1,10 +1,9 @@
+from turtle import color
 import numpy as np
 import math
 import matplotlib.pyplot as plt
 import tkinter as tk
 from tkinter import filedialog
-from numba import jit, cuda
-
 root = tk.Tk()
 root.withdraw()
 
@@ -40,7 +39,7 @@ def amplitude_n (x, n, T):
 
 # this will calculate the phase of the nth harmonic
 def phase_n (x, n, T):
-	return np.arctan(a_n(x, n, T)/b_n(x, n, T))
+	return np.arctan(b_n(x, n, T)/a_n(x, n, T))
 
 # calculates the amplitude of the harmonics for all harmonics
 def calculate_harmonics (input, h_count):
@@ -50,12 +49,31 @@ def calculate_harmonics (input, h_count):
 def calculate_phases (input, h_count):
 	return [phase_n(input, n, len(input)) for n in range(h_count)]
 
-# plots the amplitude of the harmonics
-def plot_graph (x_axis, data1, data2):
-	plt.xlabel("Harmonic")
+# plots original wave
+def plot_wave (wave):
+	plt.title("Input Waveform")
+	plt.xlabel("Time (samples)")
 	plt.ylabel("Amplitude")
-	plt.bar(range(x_axis), data1, data2)
+	plt.plot(wave)
 	plt.show()
+
+# plots the amplitude of the harmonics and phase in a graph below
+def plot_graph (h_count, harmonics, phases):
+	fig, ax1 = plt.subplots()
+	fig.suptitle(f"Harmonics of Input Waveform (n = {h_count})")
+	ax1.set_title("Ampltiude and Phase of Harmonics")
+	ax1.set_xlabel("Harmonic #")
+	ax1.set_ylabel("Amplitude")
+	ax1.bar(range(h_count), harmonics, 0.9, color = "royalblue")
+	ax2 = ax1.twinx()
+	ax2.set_ylabel("Phase (radians)")
+	ax2.bar(range(h_count), phases, 0.125, color = "limegreen")
+	plt.show()
+
+def save_to_file (h_count, harmonics, phases, file_name):
+	with open(file_name, 'w') as f:
+		for n in range(h_count):
+			f.write(f"{n} {harmonics[n]}\t{phases[n]}\n")
 
 def main ():
 	print("\nDiscrete Fourier Transform Tool\n--------------------------------\nThis program will take an input wave plot it's harmonics and reconstruct the wave from the harmonics.")
@@ -81,6 +99,7 @@ def main ():
 
 	harmonics = calculate_harmonics(samples, harmonic_count)
 	phases = calculate_phases(samples, harmonic_count)
+	plot_wave(samples)
 	plot_graph(harmonic_count, harmonics, phases)
 
 if __name__ == '__main__':
