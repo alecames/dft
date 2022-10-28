@@ -80,15 +80,16 @@ def plot_harmonics(h_count, harmonics, phases):
 	fig.legend()
 	plt.show()
 
-# saves the harmonics and phases to a file titled {filename}_{harmonic count}_harmonics.txt into 'out' folder
-def save_harmonics(h_count, harmonics, phases, file_path):
-	with open(f"harmonics_out/{getname(file_path)}_{h_count}_harmonics.txt", 'w') as f:
+# saves harmonic #, coefficient a_n, coefficient b_n, ampltitude and phase to a tab delimited txt file
+def save_harmonics(h_count, harmonics, phases, file_path, T, x): 
+	with open(f"out/{getname(file_path)}_{h_count}_harmonics.txt", 'w') as f:
+		f.write("Harm. #\tCoeff. a\tCoeff. b\tAmplitude\tPhase\n")
 		for n in range(h_count):
-			f.write(f"{harmonics[n]}\t{phases[n]}\n")
+			f.write(f"{n}\t{a_n(x, n, T):.8f}\t{b_n(x, n, T):.8f}\t{harmonics[n]:.8f}\t{phases[n]:.8f}\n")
 
 # saves the reconstructed wave to a file titled {filename}_{harmonic count}_reconstructed.txt into 'out' folder
 def save_wave(h_count, wave, file_path):
-	with open(f"reconstruct_out/{getname(file_path)}_{h_count}_reconstructed.txt", 'w') as f:
+	with open(f"out/{getname(file_path)}_{h_count}_reconstructed.txt", 'w') as f:
 		for t in range(len(wave)):
 			f.write(f"{wave[t]}\n")
 
@@ -131,7 +132,7 @@ def main():
 		except ValueError:
 			print("Error: Harmonic count must be a positive integer.")
 			continue
-
+	
 	harmonics = calculate_harmonics(samples, harmonic_count)
 	phases = calculate_phases(samples, harmonic_count)
 	print("1. Plotting time-amplitude graph of original wave...\n   Close graph to continue to harmonics...")
@@ -149,9 +150,9 @@ def main():
 	while True:
 		save = input("\nSave harmonics to file? (y/n): ")
 		if save == "y":
-			save_harmonics(harmonic_count, harmonics, phases, file_path)
+			save_harmonics(harmonic_count, harmonics, phases, file_path, len(samples), samples)
 			print(
-				f"Saved harmonics to '/harmonics_out/{getname(file_path)}_{harmonic_count}_harmonics.txt'.")
+				f"Saved harmonics to '/out/{getname(file_path)}_{harmonic_count}_harmonics.txt'.")
 			break
 		elif save == "n":
 			break
@@ -165,7 +166,7 @@ def main():
 		if save == "y":
 			save_wave(harmonic_count, reconstructed_wave, file_path)
 			print(
-				f"Saved reconstructed wave to '/reconstruct_out/{getname(file_path)}_{harmonic_count}_reconstructed.txt'.")
+				f"Saved reconstructed wave to '/out/{getname(file_path)}_{harmonic_count}_reconstructed.txt'.")
 			break
 		elif save == "n":
 			break
