@@ -152,20 +152,20 @@ def main():
 			continue
 	
 	# print info to console
-	print("1. Plotting time-amplitude graph of original wave...\n   Close graph to continue to harmonics...")
+	print("\n1. Plotting time-amplitude graph of original wave...\n   Close graph to continue to harmonics...")
 	plot_wave(x, "Original Wave")
 
-	print("2. Performing Discrete Fourier Transform...")
+	print("\n2. Performing Discrete Fourier Transform...")
 	coeffs_a, coeffs_b = calc_coeffs(harmonic_count, x, T, pool)
 	harmonics = amplitude_n(coeffs_a, coeffs_b, harmonic_count)
 	phases = phase_n(coeffs_a, coeffs_b, harmonic_count)
 
-	print(f"3. Plotting graph of {harmonic_count} harmonics...\n   Close graph to continue to reconstruction...")
+	print(f"\n3. Plotting graph of {harmonic_count} harmonics...\n   Close graph to continue to reconstruction...")
 	plot_harmonics(harmonic_count, harmonics, phases)
 	
-	print("4. Reconstructing wave...")
+	print("\n4. Reconstructing wave...")
 	reconstructed_wave = reconstruct_wave(harmonic_count, harmonics, phases, T)
-	print("Close graph to save harmonics data to file...")
+	print("   Close graph to save harmonics data to file...")
 	plot_wave(reconstructed_wave, "Reconstructed Wave")
 	print("------------------------------------------------\n")
 
@@ -193,7 +193,7 @@ def main():
 			break
 		else:
 			print("Error: Invalid input.")
-	# 		continue
+			continue
 
 if __name__ == "__main__":
 	main()
