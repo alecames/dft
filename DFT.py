@@ -1,10 +1,10 @@
-import numpy as np
 import math
-import matplotlib.pyplot as plt
 import tkinter as tk
 from tkinter import filedialog
+
+import matplotlib.pyplot as plt
+import numpy as np
 from tqdm.auto import tqdm
-import multiprocessing as mp
 
 root = tk.Tk()
 root.withdraw()
@@ -121,8 +121,6 @@ def reconstruct_wave(h_count, harmonics, phases, T):
 
 # ================================ = ================================ = ================================
 def main():
-	pool = mp.Pool(mp.cpu_count())
-
 	print("\nDiscrete Fourier Transform Tool\n-------------------------------\nThis program will take an input wave plot it's harmonics and reconstruct the wave from the harmonics.")
 	print(f"Sample rate: {SAMPLE_RATE}Hz")
 	# read in the file
