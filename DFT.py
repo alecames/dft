@@ -42,7 +42,7 @@ def b_n(x, n, T):
 	return 2/T * sum(x[k] * np.sin(2*math.pi*n*k/T) for k in range(T))
 
 # calculates list of coefficients a_n and b_n
-def calc_coeffs(h_count, x, T, pool):
+def calc_coeffs(h_count, x, T):
 	coeff_a = [0 for i in range(h_count)]
 	coeff_b = [0 for i in range(h_count)]
 	for n in tqdm(range(h_count), bar_format="{l_bar}{bar:40}{r_bar}"):
@@ -154,7 +154,7 @@ def main():
 	plot_wave(x, "Original Wave")
 
 	print("\n2. Performing Discrete Fourier Transform...")
-	coeffs_a, coeffs_b = calc_coeffs(harmonic_count, x, T, pool)
+	coeffs_a, coeffs_b = calc_coeffs(harmonic_count, x, T)
 	harmonics = amplitude_n(coeffs_a, coeffs_b, harmonic_count)
 	phases = phase_n(coeffs_a, coeffs_b, harmonic_count)
 
