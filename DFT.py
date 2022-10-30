@@ -1,10 +1,13 @@
 import math
 import tkinter as tk
 from tkinter import filedialog
-
 import matplotlib.pyplot as plt
 import numpy as np
-from tqdm.auto import tqdm
+try:
+    from tqdm.auto import tqdm
+except ImportError:
+    def tqdm(iterator, *args, **kwargs):
+        return iterator
 
 root = tk.Tk()
 root.withdraw()
